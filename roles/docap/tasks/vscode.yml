@@ -1,0 +1,12 @@
+# A nice editor / development environment
+- name: Ubuntu - Get Visual Studio Code
+  when: ansible_distribution == 'Ubuntu'
+  snap:
+    name: code
+    classic: yes
+
+- name: Amazon - Get Visual Studio Code
+  when: ansible_distribution == 'Amazon'
+  yum:
+    state: present
+    name: https://go.microsoft.com/fwlink/?LinkID=760867

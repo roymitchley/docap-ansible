@@ -1,0 +1,51 @@
+# Amazon linux has a recent ish version of docker in the yum repo
+- name: Amazon - Install Docker
+  when: ansible_distribution == 'Amazon'
+  yum:
+    state: present
+    name: docker
+
+# Add the Docker repository key so we can trust it
+- name: Ubuntu - Add Docker apt-key
+  when:  ansible_distribution == 'Ubuntu'
+  apt_key: 
+    url:  https://download.docker.com/linux/ubuntu/gpg
+    state: present 
+
+# Add the Docker repository
+- name: Ubuntu - Add Docker APT repository
+  when: ansible_distribution == 'Ubuntu'
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu disco stable edge test
+    state: present
+    filename: docker
+    update_cache: yes
+
+# Download docker CE
+- name: Ubuntu - Get Docker
+  when: ansible_distribution == 'Ubuntu'
+  apt:
+    update_cache: yes
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+# Make a group on the VM for docker users
+- name: Add Docker group
+  group:
+    name: docker
+    state: present
+
+# Add our devops user to the docker group
+- name: Add Devops user to Docker group
+  user:
+    name: devops
+    group: docker
+
+# Start docker running
+- name: Start Docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes

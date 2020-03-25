@@ -1,0 +1,48 @@
+- name: Make /usr/local/bin
+  file:
+    name: /usr/local/bin
+    state: directory
+
+# Get the authenticator for EKS 
+- name: Get the AWS IAM Authenticator
+  get_url:
+    url: https://amazon-eks.s3-us-west-2.amazonaws.com/{{ auth_version }}/bin/linux/amd64/aws-iam-authenticator
+    dest: /usr/local/bin
+    mode: +x
+
+# Tool that lets us build a cluster with AWS
+# https://eksctl.io
+- name: Extract eksctl into /usr/local/bin
+  unarchive:
+    src: 'https://github.com/weaveworks/eksctl/releases/download/{{ eksctl_version }}/eksctl_Linux_amd64.tar.gz'
+    dest: /usr/local/bin
+    mode: +x
+    remote_src: yes
+
+# Kubernetes package manager
+- name: Get Helm
+  get_url: 
+    url: 'https://get.helm.sh/helm-{{ helm_version }}-linux-amd64.tar.gz'
+    dest: /tmp/helm-linux-amd64.tar.gz
+
+# Extract from the zip
+- name: Extract Helm
+  unarchive:
+    src: /tmp/helm-linux-amd64.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+# Put it in the path
+- name: Copy Helm to /usr/local/bin
+  copy:
+    src: /tmp/linux-amd64/helm
+    dest: /usr/local/bin
+    mode: +x
+    remote_src: yes
+
+# Kubernetes command line tool
+- name: Get kubectl
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/{{ kubectl_version }}/bin/linux/amd64/kubectl
+    dest: /usr/local/bin
+    mode: +x

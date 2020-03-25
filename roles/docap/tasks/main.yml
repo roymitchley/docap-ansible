@@ -1,0 +1,13 @@
+# The main file that is run when the role is run
+
+- name: Main - apply prereqs
+  include_tasks: prereq.yml
+
+- name: Main - Install Docker
+  include_tasks: docker.yml
+
+- name: Main - Install Cloud Tooling
+  include_tasks: cloud_tools.yml
+
+- name: Main - Install Visual Studio Code IDE
+  include_tasks: vscode.yml

@@ -1,0 +1,10 @@
+# First we need to install ansible (on ubuntu):
+#     sudo pip install ansible --upgrade
+#
+# Then run this playbook:
+#     ansible-playbook provision.yml
+
+- hosts: localhost
+  become: yes
+  roles:
+    - docap

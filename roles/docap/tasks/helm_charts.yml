@@ -1,0 +1,33 @@
+- name: Make directory
+  file:
+    name: '{{ ansible_user_dir }}/values'
+    state: directory
+
+- name: Copy Installer Script
+  copy:
+    src: install-using-helm.sh
+    dest: '{{ ansible_user_dir }}/install-using-helm.sh'
+    mode: '0755'
+
+- name: Copy Uninstaller Script
+  copy:
+    src: uninstall-using-helm.sh
+    dest: '{{ ansible_user_dir }}/uninstall-using-helm.sh'
+    mode: '0755'
+
+- name: Copy base tool install Script
+  copy:
+    src: install-base-tools-helm.sh
+    dest: '{{ ansible_user_dir }}/install-base-tools-helm.sh'
+    mode: '0755'
+
+- name: Copy Values Files
+  copy:
+    src: values/{{ item }}
+    dest: '{{ ansible_user_dir }}/values/{{ item }}'
+  with_items:
+    - jenkins-values.yml
+    - sonarqube-values.yml
+    - prometheus-values.yml
+    - grafana-values.yml
+    - argocd-values.yml

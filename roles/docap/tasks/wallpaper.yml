@@ -1,0 +1,12 @@
+- name: Amazon - Copy Wallpaper file
+  when: ansible_distribution == 'Amazon'
+  copy:
+    src: wallpaper-r37.jpg
+    dest: "{{ ansible_user_dir }}/.wallpaper-r37.jpg"
+
+# note the quotes on teh value, it's important
+- name: Amazon - Set Wallpaper
+  when: ansible_distribution == 'Amazon'
+  dconf:
+    key: "/org/mate/desktop/background/picture-filename"
+    value: "'{{ ansible_user_dir }}/.wallpaper-r37.jpg'"

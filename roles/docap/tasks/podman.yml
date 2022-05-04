@@ -1,0 +1,50 @@
+# Amazon linux has a recent ish version of docker in the yum repo
+# This has not been verified! Need to check if yum repo has podman.
+# .... Amazon Yum Repo does not have podman :-(
+#- name: Amazon - Install Podman
+#  when: ansible_distribution == 'Amazon'
+#  become: yes
+#  yum:
+#    state: present
+#    name: podman
+
+# Add the Podman repository key so we can trust it
+- name: Ubuntu - Add Podman apt-key
+  when:  ansible_distribution == 'Ubuntu'
+  become: yes
+  apt_key: 
+    url:  https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/Release.key
+    state: present 
+
+# Add the Podman repository
+- name: Ubuntu - Add Podman APT repository
+  when: ansible_distribution == 'Ubuntu'
+  become: yes
+  apt_repository:
+    repo: deb [arch=amd64] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /
+    state: present
+    update_cache: yes
+
+# Download podman
+- name: Ubuntu - Get Podman
+  when: ansible_distribution == 'Ubuntu'
+  become: yes
+  apt:
+    update_cache: yes
+    name: 
+      - podman
+
+# Make a group on the VM for docker users
+- name: Add Podman group
+  become: yes
+  group:
+    name: podman
+    state: present
+
+# Add our devops user to the podman group
+- name: Ubuntu - Add Devops user to Podman group
+  when: ansible_distribution == 'Ubuntu'
+  become: yes
+  user:
+    name: devops
+    group: podman

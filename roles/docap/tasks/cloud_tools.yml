@@ -1,10 +1,12 @@
 - name: Make /usr/local/bin
+  become: yes
   file:
     name: /usr/local/bin
     state: directory
 
 # Get the authenticator for EKS 
 - name: Get the AWS IAM Authenticator
+  become: yes
   get_url:
     url: https://amazon-eks.s3-us-west-2.amazonaws.com/{{ auth_version }}/bin/linux/amd64/aws-iam-authenticator
     dest: /usr/local/bin
@@ -13,11 +15,20 @@
 # Tool that lets us build a cluster with AWS
 # https://eksctl.io
 - name: Extract eksctl into /usr/local/bin
+  become: yes
   unarchive:
     src: 'https://github.com/weaveworks/eksctl/releases/download/{{ eksctl_version }}/eksctl_Linux_amd64.tar.gz'
     dest: /usr/local/bin
     mode: +x
     remote_src: yes
+
+# CLI 53 for AWS Route 53
+- name: Get CLI 53
+  become: yes
+  get_url:
+    url: https://github.com/barnybug/cli53/releases/download/{{ cli53_version }}/cli53-linux-amd64
+    dest: /usr/local/bin/cli53
+    mode: +x
 
 # Kubernetes package manager
 - name: Get Helm
@@ -34,15 +45,53 @@
 
 # Put it in the path
 - name: Copy Helm to /usr/local/bin
+  become: yes
   copy:
     src: /tmp/linux-amd64/helm
     dest: /usr/local/bin
     mode: +x
     remote_src: yes
 
+# Part of installin openshift cli.
 # Kubernetes command line tool
-- name: Get kubectl
-  get_url:
-    url: https://storage.googleapis.com/kubernetes-release/release/{{ kubectl_version }}/bin/linux/amd64/kubectl
+#- name: Get kubectl
+#  become: yes
+#  get_url:
+#    url: https://storage.googleapis.com/kubernetes-release/release/{{ kubectl_version }}/bin/linux/amd64/kubectl
+#    dest: /usr/local/bin
+#    mode: +x
+
+# K9s - a fancy terminal UI for Kubernetes
+- name: Get K9s
+  become: yes
+  unarchive:
+    src: 'https://github.com/derailed/k9s/releases/download/{{ k9s_version }}/k9s_Linux_x86_64.tar.gz'
     dest: /usr/local/bin
     mode: +x
+    remote_src: yes
+
+ # ArgoCD CLI - for some GitOps
+- name: Get ArgoCD CLI
+  become: yes
+  get_url: 
+    url: https://github.com/argoproj/argo-cd/releases/download/{{ argocd_version }}/argocd-linux-amd64
+    dest: /usr/local/bin/argocd
+    mode: +x
+
+# Install Openshift CLI
+- name: Extract Openshift CLI (and kubectl)
+  become: yes
+  unarchive:
+    src: https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ openshift_version }}/openshift-client-linux-{{ openshift_version }}.tar.gz
+    dest: /usr/local/bin
+    mode: +x
+    remote_src: yes
+
+# install Openshift Pipelines (Tekton) CLI
+- name: Install Openshift CLI (and kubectl)
+  become: yes
+  unarchive:
+    src: https://mirror.openshift.com/pub/openshift-v4/clients/pipeline/{{ tkn_version }}/tkn-linux-amd64-{{ tkn_version }}.tar.gz
+    dest: /usr/local/bin
+    mode: +x
+    remote_src: yes

@@ -1,0 +1,9 @@
+server:
+  service:
+    type: LoadBalancer
+    
+    # creating network loadbalancers in aws.
+    # decided to use CLBs instead of NLBs for docap-R3.7
+    #annotations: {
+    #  service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    #}

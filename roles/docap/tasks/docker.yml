@@ -1,6 +1,7 @@
 # Amazon linux has a recent ish version of docker in the yum repo
 - name: Amazon - Install Docker
   when: ansible_distribution == 'Amazon'
+  become: yes
   yum:
     state: present
     name: docker
@@ -8,6 +9,7 @@
 # Add the Docker repository key so we can trust it
 - name: Ubuntu - Add Docker apt-key
   when:  ansible_distribution == 'Ubuntu'
+  become: yes
   apt_key: 
     url:  https://download.docker.com/linux/ubuntu/gpg
     state: present 
@@ -15,6 +17,7 @@
 # Add the Docker repository
 - name: Ubuntu - Add Docker APT repository
   when: ansible_distribution == 'Ubuntu'
+  become: yes
   apt_repository:
     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu disco stable edge test
     state: present
@@ -24,6 +27,7 @@
 # Download docker CE
 - name: Ubuntu - Get Docker
   when: ansible_distribution == 'Ubuntu'
+  become: yes
   apt:
     update_cache: yes
     name: 
@@ -33,18 +37,40 @@
 
 # Make a group on the VM for docker users
 - name: Add Docker group
+  become: yes
   group:
     name: docker
     state: present
 
 # Add our devops user to the docker group
-- name: Add Devops user to Docker group
+- name: Ubuntu - Add Devops user to Docker group
+  when: ansible_distribution == 'Ubuntu'
+  become: yes
   user:
     name: devops
     group: docker
 
+# The Above doesn't play nice on AWS
+- name: Amazon - Force the group update
+  when: ansible_distribution == 'Amazon'
+  become: yes
+  command: usermod -aG docker '{{ lookup("env", "USER") }}'
+    
+- name: Amazon - Force the group update
+  when: ansible_distribution == 'Amazon'
+  command: newgrp docker
+
+# The Above doesn't play nice on AWS
+- name: Amazon - Make the Docker Daemon DNS work
+  when: ansible_distribution == 'Amazon'
+  become: yes
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+
 # Start docker running
 - name: Start Docker service
+  become: yes
   service:
     name: docker
     state: started

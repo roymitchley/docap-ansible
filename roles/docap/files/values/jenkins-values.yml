@@ -1,0 +1,37 @@
+# We need to install some Jenkins plugins (mostly the blueocean one)
+controller:
+  # Weekly Jenkins release rather than Long Term Support
+  #   However recent helm update has cause tag of 'latest'
+  #   to fail ('latest' doesnt match semantic versioning)
+  #   so forced to target a specific recent version
+  tag: '2.344' # (2022-04-18)
+
+  # Expose to outside the cluster
+  serviceType: LoadBalancer
+
+  # creating network loadbalancers in aws.
+  # decided to use CLBs instead of NLBs for docap-R3.7
+  #annotations: {
+  #  service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  #}
+
+  # Notice before a new version of the course we should verify that plugins are still working and update to latest versions
+  # blueocean pluin has a bug 1.11.2020 https://issues.jenkins-ci.org/browse/JENKINS-56773 will be fixed
+
+  # Install these Jenkins plugins
+  installPlugins:
+    - kubernetes:3580.v78271e5631dc
+    - blueocean:1.25.3
+    - workflow-aggregator:2.7
+    - configuration-as-code:1429.v09b_044a_c93de 
+    - sonar:2.14
+    - cobertura:1.17
+    - jaxb:2.3.0.1  # bump from 2.3.0
+    # Other dependent plugins but installed automatically..
+    # Dependencies of blueocean
+    #- workflow-job:1180.v04c4e75dce43
+    #- git:4.11.0
+    # Dependencies of kubernetes
+    #- credentials-binding:523.vd859a_4b_122e6 
+    - command-launcher:1.6    # Bump to latest from 1.2
+    - jdk-tool:1.5            # Bump to latest from 1.0

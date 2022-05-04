@@ -6,8 +6,20 @@
 - name: Main - Install Docker
   include_tasks: docker.yml
 
+- name: Main - Install Podman
+  include_tasks: podman.yml
+
 - name: Main - Install Cloud Tooling
   include_tasks: cloud_tools.yml
 
 - name: Main - Install Visual Studio Code IDE
   include_tasks: vscode.yml
+
+- name: Main - Install Helm Charts
+  include_tasks: helm_charts.yml
+
+- name: Main - Setup Desktop
+  include_tasks: wallpaper.yml
+
+- name: Main - Install nodejs
+  include_tasks: node.yml

@@ -1,0 +1,29 @@
+- name: install nodejs prerequisites
+  when:  ansible_distribution == 'Ubuntu'
+  become: yes
+  apt:
+    name:
+      - apt-transport-https
+      - gcc
+      - g++
+      - make
+    state: present
+- name: add nodejs apt key
+  when:  ansible_distribution == 'Ubuntu'
+  become: yes
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+- name: add nodejs repository
+  when:  ansible_distribution == 'Ubuntu'
+  become: yes
+  apt_repository:
+    repo: deb https://deb.nodesource.com/node_12.x {{ ansible_lsb.codename }} main
+    state: present
+    update_cache: yes
+- name: install nodejs
+  when:  ansible_distribution == 'Ubuntu'
+  become: yes
+  apt:
+    name: nodejs
+    state: present

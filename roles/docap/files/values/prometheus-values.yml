@@ -1,0 +1,19 @@
+server:
+  # version number - essentially the latest from from https://prometheus.io/download/
+  # 2021-02-23 will use default value from helm chart
+  #image:
+  #  tag: v2.20.1
+
+  service:
+    # expose the website externally (so it's not just in the cluster)
+    type: LoadBalancer
+    # add aws network loadbalancer
+    # decided to use CLBs instead of NLBs for docap-R3.7
+    #annotations: {
+    #  service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    #}
+
+# by default prometheus collects info every 60 seconds
+# i cant wait that long
+global:
+  scrape_interval: 10s

@@ -1,0 +1,28 @@
+
+# for docap R-3.7 latest helm chart uses 8.5-community
+#image:
+#  tag: 8.4-community
+
+plugins:
+  install:
+    # - "https://binaries.sonarsource.com/Distribution/sonar-java-plugin/sonar-java-plugin-6.3.0.21585.jar"
+    - "https://github.com/galexandre/sonar-cobertura/releases/download/2.0/sonar-cobertura-plugin-2.0.jar"
+    #- "https://binaries.sonarsource.com/Distribution/sonar-python-plugin/sonar-python-plugin-2.9.0.6410.jar"
+    #- "https://binaries.sonarsource.com/Distribution/sonar-scm-git-plugin/sonar-scm-git-plugin-1.11.0.11.jar"
+    #- "https://binaries.sonarsource.com/Distribution/sonar-html-plugin/sonar-html-plugin-3.2.0.2082.jar"
+    #- "https://binaries.sonarsource.com/Distribution/sonar-javascript-plugin/sonar-javascript-plugin-6.2.1.12157.jar"
+    #- "https://binaries.sonarsource.com/Distribution/sonarlint-cli/sonarlint-cli-2.1.0.566.zip"
+    #- "https://binaries.sonarsource.com/Distribution/sonar-xml-plugin/sonar-xml-plugin-2.0.1.2020.jar"
+    #- "https://binaries.sonarsource.com/Distribution/sonar-typescript-plugin/sonar-typescript-plugin-2.1.0.4359.jar"
+    # - "https://binaries.sonarsource.com/Distribution/sonar-css-plugin/sonar-css-plugin-1.2.0.1325.jar"
+    # - "https://binaries.sonarsource.com/Distribution/sonar-checkstyle-plugin/sonar-checkstyle-plugin-2.4.jar"
+    # - "https://binaries.sonarsource.com/Distribution/sonar-findbugs-plugin/sonar-findbugs-plugin-3.3.jar"
+
+service:
+  type: LoadBalancer
+
+  # specifying to use AWS network load balancer
+  # decided to use CLBs instead of NLBs for docap-R3.7
+  #annotations: {
+  #  service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  #}

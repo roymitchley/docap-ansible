@@ -1,5 +1,6 @@
 - name: Ubuntu - Get some useful things from the package manager
   when: ansible_distribution == 'Ubuntu'
+  become: yes
   apt:
     state: present
     name: 
@@ -9,33 +10,39 @@
       - postgresql 
       - postgresql-contrib
       - libpq-dev
+      - default-jre
 
 - name: Amazon - Get some useful things from the package manager
   when: ansible_distribution == 'Amazon'
+  become: yes
   yum:
     state: present
     name:
-    - curl
-    - git
-    - python3-devel
-    - postgresql
+      - curl
+      - git
+      - python3-devel
+      - postgresql
 
 - name: pip
+  become: yes
   pip:
     state: present
     name: 
       - pipenv
       - awscli
+      - psutil
 
 # So that your VM time stays correct
 - name: Ubuntu - Ensure time sync
   when: ansible_distribution == 'Ubuntu'
+  become: yes
   service:
     name: systemd-timesyncd
     state: started
 
 - name: Amazon - Ensure time sync
   when: ansible_distribution == 'Amazon'
+  become: yes
   service:
     name: chronyd
     state: started

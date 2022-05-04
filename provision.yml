@@ -5,6 +5,6 @@
 #     ansible-playbook provision.yml
 
 - hosts: localhost
-  become: yes
+  connection: local
   roles:
     - docap
